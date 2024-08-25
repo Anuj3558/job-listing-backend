@@ -30,6 +30,7 @@ const UserProfileSchema = new Schema({
   experience: [ExperienceSchema],
   skills: [{ type: String }],
   status: { default: "Pending", type: String },
+  userType: { type: String },
 });
 
 // Create the UserProfile model

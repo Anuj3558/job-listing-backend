@@ -16,7 +16,7 @@ const HandleRegisterWithGoogle = async (req, res) => {
       name,
       email,
       uid,
-      profileUrl:profile,
+      profileUrl: profile,
     });
 
     // Save the new user to the database
@@ -36,7 +36,7 @@ const HandleRegisterWithEmailAndPassword = async (req, res) => {
 
   try {
     // Check if the user already exists by email
-    const existingUser = await UserProfile.findOne({ email });
+    const existingUser = await UserProfile.findOne({ email: email });
     if (existingUser) {
       return res.status(400).send("User already exists");
     }
@@ -65,7 +65,6 @@ const HandleRegisterWithEmailAndPassword = async (req, res) => {
 // Get user information by UID
 const GetUserInfor = async (req, res) => {
   const { uid } = req.body;
- 
 
   try {
     if (!uid) {
@@ -88,11 +87,10 @@ const handleProfileSubmit = async (req, res) => {
   try {
     const data = req.body;
 
-    
     const updatedUser = await UserProfile.findOneAndUpdate(
-      { email: data.email }, 
-      { $set: data }, 
-      { new: true, runValidators: true } 
+      { email: data.email },
+      { $set: data },
+      { new: true, runValidators: true }
     );
 
     if (!updatedUser) {

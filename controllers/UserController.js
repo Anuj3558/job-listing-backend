@@ -84,5 +84,33 @@ const GetUserInfor = async (req, res) => {
   }
 };
 
+const handleProfileSubmit = async (req, res) => {
+  try {
+    const data = req.body;
+
+    
+    const updatedUser = await UserProfile.findOneAndUpdate(
+      { email: data.email }, 
+      { $set: data }, 
+      { new: true, runValidators: true } 
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Successfully updated
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
 // Exporting the functions
-export { HandleRegisterWithGoogle, HandleRegisterWithEmailAndPassword, GetUserInfor };
+export {
+  HandleRegisterWithGoogle,
+  HandleRegisterWithEmailAndPassword,
+  GetUserInfor,
+  handleProfileSubmit,
+};

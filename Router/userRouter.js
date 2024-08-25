@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { HandleRegisterWithGoogle, HandleRegisterWithEmailAndPassword, GetUserInfor } from "../controllers/UserController.js"; // Import your controller functions
+import { HandleRegisterWithGoogle, HandleRegisterWithEmailAndPassword, GetUserInfor, handleProfileSubmit } from "../controllers/UserController.js"; // Import your controller functions
 
 const UserRouter = Router();
 
@@ -12,4 +12,5 @@ UserRouter.post("/register", HandleRegisterWithEmailAndPassword);
 // Route for getting user information by UID
 UserRouter.post("/info", GetUserInfor);
 
+UserRouter.put("/completeprofile", handleProfileSubmit);
 export default UserRouter;

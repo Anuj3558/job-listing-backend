@@ -4,7 +4,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import { config as configDotenv } from "dotenv";
 import connectToMongoDb from "./connection.js";
-import UserRouter from "./Router/UserRouter.js";
+import UserRouter from "./Router/userRouter.js";
 
 
 configDotenv();

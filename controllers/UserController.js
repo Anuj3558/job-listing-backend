@@ -32,7 +32,7 @@ const HandleRegisterWithGoogle = async (req, res) => {
 
 // Handle registration with email and password
 const HandleRegisterWithEmailAndPassword = async (req, res) => {
-  const { email, password, name } = req.body;
+  const { email, uid, name } = req.body;
 
   try {
     // Check if the user already exists by email
@@ -42,13 +42,13 @@ const HandleRegisterWithEmailAndPassword = async (req, res) => {
     }
 
     // Hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
+   
 
     // Create a new user
     const newUser = new UserProfile({
       name,
       email,
-      password: hashedPassword, // Store the hashed password
+      uid, // Store the hashed password
     });
 
     // Save the new user to the database

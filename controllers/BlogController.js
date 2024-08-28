@@ -3,7 +3,8 @@ import Blog from "../model/BlogModel.js";
 
 import cloudinary from "../config/cloudinaryConfig.js";
 
-export const HandleBlogUpload = async (req, res) => {
+
+const HandleBlogUpload = async (req, res) => {
   try {
     const { name,title, content } = req.body;
     let { categories } = req.body;
@@ -42,5 +43,37 @@ export const HandleBlogUpload = async (req, res) => {
       error: error.message,
     });
   }
+}
+
+const handleBlogs = async (req, res) => {
+  try {
+    // Retrieve all blog documents from the collection
+    const allBlogs = await Blog.find(); // Use await to get the result from the promise
+
+    // Send the retrieved blogs as the response
+    res.status(200).json(allBlogs);
+  } catch (error) {
+    // Log the error and send an error response
+    console.error("Error retrieving blogs:", error.message);
+    res.status(500).json({
+      message: "Error retrieving blogs",
+      error: error.message,
+    });
+  }
+};
+const handleSingleBlog = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const blog = await Blog.findById(id);
+    
+    if (!blog) {
+      return res.status(404).json({ error: "Blog not found" });
+    }
+    res.json(blog);
+  } catch (error) {
+    console.error(error); // Log the error for debugging
+    res.status(500).json({ error: "Internal Server Error" });
+  }
 };
 
+export { handleBlogs, HandleBlogUpload, handleSingleBlog };

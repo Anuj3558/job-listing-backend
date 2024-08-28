@@ -5,7 +5,7 @@ import cloudinary from "../config/cloudinaryConfig.js";
 
 export const HandleBlogUpload = async (req, res) => {
   try {
-    const { title, content } = req.body;
+    const { name,title, content } = req.body;
     let { categories } = req.body;
 
     // Parse categories if it's a string
@@ -22,6 +22,7 @@ export const HandleBlogUpload = async (req, res) => {
 
     // Create the new blog post with the uploaded image URL
     const newBlog = new Blog({
+      name,
       title,
       content,
       categories,

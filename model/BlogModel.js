@@ -15,7 +15,12 @@ const blogSchema = new Schema(
     },
     categories: [
       {
-        type: String,
+        value: {
+          type: String,
+        },
+        lable:{
+          type:String,
+        }
       },
     ],
     image: {

@@ -5,6 +5,10 @@ const { Schema } = mongoose;
 
 const blogSchema = new Schema(
   {
+    name:{
+      type:String,
+  
+    },
     title: {
       type: String,
       required: true,

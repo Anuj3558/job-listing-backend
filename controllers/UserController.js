@@ -134,11 +134,43 @@ const handleProfileSubmit = async (req, res) => {
   }
 };
 
+  const handleSaveChanges = async (req, res) => {
+    try {
+      const data = req.body; // Extract the data from the request body
+      console.log(data);
+
+      // Update the user profile in the database
+      const updatedUser = await UserProfile.findOneAndUpdate(
+        { email: data.email }, // Match based on the email
+        { $set: data }, // Update the fields with the new data
+        { new: true, runValidators: true } // Return the updated document and run validators
+      );
+
+      if (!updatedUser) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+      
+
+      res.status(200).json({
+        message: "Changes saved successfully",
+        updatedUser, // Optionally return the updated user data
+      });
+    } catch (error) {
+      console.error("Error occurred while saving changes:", error);
+      res.status(500).json({
+        message: "An error occurred while saving changes",
+        error: error.message, // Optionally include the error message in the response
+      });
+    }
+  };
+
+
 // Exporting the functions
 export {
   HandleRegisterWithGoogle,
   HandleRegisterWithEmailAndPassword,
   GetUserInfor,
   handleProfileSubmit,
-  handleSaveChanges
 };

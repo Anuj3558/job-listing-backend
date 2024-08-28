@@ -1,17 +1,45 @@
 // controllers/BlogController.js
-import Blog from "../model/blogModel"; // Import the Blog model
+import Blog from "../model/BlogModel.js";
 
-const HandleBlogUpload = async (req, res) => {
+import cloudinary from "../config/cloudinaryConfig.js";
+
+export const HandleBlogUpload = async (req, res) => {
   try {
-    const { title, content, categories, image } = req.body;
+    const { title, content } = req.body;
+    let { categories } = req.body;
 
-    const newBlog = new Blog({ title, content, categories, image });
+    // Parse categories if it's a string
+    if (typeof categories === "string") {
+      categories = JSON.parse(categories);
+    }
+
+    let imageUrl = "";
+    if (req.file) {
+      // Upload the image to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path);
+      imageUrl = result.secure_url;
+    }
+
+    // Create the new blog post with the uploaded image URL
+    const newBlog = new Blog({
+      title,
+      content,
+      categories,
+      image: imageUrl,
+    });
+
     await newBlog.save();
 
-    res.status(201).json(newBlog);
+    res.status(201).json({
+      message: "Blog created successfully",
+      blog: newBlog,
+    });
   } catch (error) {
-    res.status(400).json({ error: error.message });
+    console.error("Error occurred while uploading blog:", error.message);
+    res.status(500).json({
+      message: "Error occurred while creating blog",
+      error: error.message,
+    });
   }
 };
 
-export { HandleBlogUpload };

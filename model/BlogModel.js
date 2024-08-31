@@ -1,13 +1,15 @@
 // models/Blog.mjs
 import mongoose from "mongoose";
+import UserProfile from "./userModel.js";
 
 const { Schema } = mongoose;
 
 const blogSchema = new Schema(
   {
-    name:{
-      type:String,
-  
+    userId: {
+      type: String,
+      required: true,
+      ref: UserProfile,
     },
     title: {
       type: String,
@@ -22,9 +24,9 @@ const blogSchema = new Schema(
         value: {
           type: String,
         },
-        lable:{
-          type:String,
-        }
+        lable: {
+          type: String,
+        },
       },
     ],
     image: {

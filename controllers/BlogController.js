@@ -2,11 +2,13 @@
 import Blog from "../model/BlogModel.js";
 
 import cloudinary from "../config/cloudinaryConfig.js";
+import UserProfile from "../model/userModel.js";
 
 
 const HandleBlogUpload = async (req, res) => {
   try {
-    const { name,title, content } = req.body;
+    const { userId,title,content  } = req.body;
+
     let { categories } = req.body;
 
     // Parse categories if it's a string
@@ -23,7 +25,7 @@ const HandleBlogUpload = async (req, res) => {
 
     // Create the new blog post with the uploaded image URL
     const newBlog = new Blog({
-      name,
+      userId,
       title,
       content,
       categories,
@@ -63,13 +65,25 @@ const handleBlogs = async (req, res) => {
 };
 const handleSingleBlog = async (req, res) => {
   const { id } = req.params;
+  console.log(id);
   try {
-    const blog = await Blog.findById(id);
+    const blog = await Blog.findById(id)  ;
+    const userId = blog.userId;
     
+    console.log(userId);
+    const user = await UserProfile.findOne({ uid :userId});
+    console.log(user);
+    if(!user){
+      return res.status(404).json({ error: "User not found" });
+    }
     if (!blog) {
       return res.status(404).json({ error: "Blog not found" });
     }
-    res.json(blog);
+    res.json({
+      blog: blog,
+      userName: user.name,
+      userProfileImg: user.profileUrl,
+    });
   } catch (error) {
     console.error(error); // Log the error for debugging
     res.status(500).json({ error: "Internal Server Error" });

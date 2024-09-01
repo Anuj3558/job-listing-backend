@@ -171,7 +171,7 @@ const getCompanyData = async (req, res) => {
             jobFeatures,
             educationRequirements,
             jobType,
-            status: "Draft", // Explicitly setting the status to "Draft"
+            status: "Open", // Explicitly setting the status to "Draft"
           });
           await job.save();
         // If the job does not exist, respond with an error message

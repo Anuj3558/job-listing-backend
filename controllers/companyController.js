@@ -95,7 +95,34 @@ const handleCompanyRegistration = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+const getAllJobs =async()=>{
+  try {
 
+
+    // Find jobs by company name
+    const jobs = await Job.find();
+    console.log(jobs)
+
+    // Check if jobs were found
+    if (jobs.length === 0) {
+      return res.status(200).json({
+        message: "No jobs found for the specified company",
+      });
+    }
+
+    // Respond with the found jobs
+    res.status(200).json({
+      message: "Jobs retrieved successfully",
+      jobs,
+    });
+  } catch (error) {
+    console.error("Error fetching jobs:", error);
+    res.status(500).json({
+      message: "An error occurred while fetching jobs",
+      error: error.message,
+    });
+  }
+}
 const getCompanyData = async (req, res) => {
     try {
       const { uid } = req.body;
@@ -315,4 +342,4 @@ const SaveDraft = async (req, res) => {
 
 
 
-export { getJobs,SaveDraft,handleCompanyRegistration, handleLoginToCompany,getCompanyData,HandleJobPost };
+export { getAllJobs,getJobs,SaveDraft,handleCompanyRegistration, handleLoginToCompany,getCompanyData,HandleJobPost };

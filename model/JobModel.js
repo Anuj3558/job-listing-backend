@@ -36,6 +36,9 @@ const jobSchema = new mongoose.Schema({
     type: [String],
     required: true,
   },
+  ProfileUrl:{
+   type: String
+  },
   jobType: {
     type: String,
     enum: ["Full-time", "Part-time", "Contract", "Internship"],

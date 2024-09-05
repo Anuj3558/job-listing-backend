@@ -95,7 +95,7 @@ const handleCompanyRegistration = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-const getAllJobs =async()=>{
+const getAllJobs =async(req,res)=>{
   try {
 
 
@@ -168,6 +168,10 @@ const getCompanyData = async (req, res) => {
         jobType, // Company name
       } = req.body;
        console.log(Companyname)
+       const fetchedCompany=await Company.find({name:Companyname})
+
+       const url = fetchedCompany[0].logoUrl;
+     
       // Find the job with the given title and company
       let job = await Job.findOne({ title, Companyname
       });
@@ -193,6 +197,7 @@ const getCompanyData = async (req, res) => {
             location,
             salary,
             description,
+            ProfileUrl:url,
             whoWeAreLookingFor,
             experienceRequirements,
             jobFeatures,
@@ -280,6 +285,10 @@ const SaveDraft = async (req, res) => {
   
       // Check if a job with the given title and company already exists
       let job = await Job.findOne({ title, Companyname });
+      const fetchedCompany=await Company.find({name:Companyname})
+     
+      const url = fetchedCompany[0].logoUrl;
+      
       console.log("jjjjjj"+job)
       if (job) {
         // Update the existing job with new values
@@ -310,6 +319,7 @@ const SaveDraft = async (req, res) => {
           company:Companyname,
           location,
           salary,
+          ProfileUrl:url,
           description,
           whoWeAreLookingFor,
           experienceRequirements,

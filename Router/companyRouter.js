@@ -13,4 +13,6 @@ companyRouter.route("/post-job").post(HandleJobPost);
 companyRouter.route("/save-draft").post(SaveDraft);
 companyRouter.route("/get-jobs/?").get(getJobs);
 companyRouter.route("/get-all-jobs").get(getAllJobs);
+companyRouter.route("/close-position").post(closePosition);
+
 export default companyRouter;

@@ -350,6 +350,34 @@ const SaveDraft = async (req, res) => {
   };
   
 
+  const closePosition = async (req, res) => {
+    console.log("Request received at close-position route");
+  
+    const { jobId } = req.body;
+    console.log("Job ID received:", jobId);
+  
+    try {
+      const updatedJob = await Job.findByIdAndUpdate(
+        jobId,
+        { status: "Closed" },
+        { new: true }
+      );
+  
+      if (!updatedJob) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+  
+      
+      res
+        .status(200)
+        .json({ message: "Position closed successfully", job: updatedJob });
+    } catch (error) {
+      console.error("Error closing the position:", error);
+      res
+        .status(500)
+        .json({ message: "An error occurred while closing the position" });
+    }
+  };
+  
 
-
-export { getAllJobs,getJobs,SaveDraft,handleCompanyRegistration, handleLoginToCompany,getCompanyData,HandleJobPost };
+export { getAllJobs,getJobs,SaveDraft,handleCompanyRegistration, handleLoginToCompany,getCompanyData,HandleJobPost,closePosition };

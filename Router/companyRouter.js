@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCompanyData, handleCompanyRegistration,handleLoginToCompany,HandleJobPost, SaveDraft, getJobs, getAllJobs } from "../controllers/companyController.js";
+import { getCompanyData, handleCompanyRegistration,handleLoginToCompany,HandleJobPost, SaveDraft, getJobs, getAllJobs,closePosition } from "../controllers/companyController.js";
 import upload from "../middleware/multer.js";
 
 const companyRouter = Router();

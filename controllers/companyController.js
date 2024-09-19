@@ -1,4 +1,5 @@
 import cloudinary from "../config/cloudinaryConfig.js";
+import userAppliedJob from "../model/appliedJobs.js";
 import Company from "../model/CompanyModel.js";
 import Job from "../model/JobModel.js";
 import UserProfile from "../model/userModel.js";
@@ -348,7 +349,7 @@ const SaveDraft = async (req, res) => {
       });
     }
   };
-  
+
 
   const closePosition = async (req, res) => {
     console.log("Request received at close-position route");
@@ -378,6 +379,41 @@ const SaveDraft = async (req, res) => {
         .json({ message: "An error occurred while closing the position" });
     }
   };
+ // Adjust path based on your project structure
+
+   const handleApplyJobs = async (req, res) => {
+    const { jobId, uid } = req.body;
+  
+    try {
+      // Check if the user has already applied for this job
+      const userApplied = await userAppliedJob.findOne({ userId: uid, 'appliedJobs.jobId': jobId });
+  
+      if (userApplied) {
+        return res.status(200).json({ message: "User has already applied for this job." });
+      }
+  
+      // If the user hasn't applied, create or update their applied jobs
+      let appliedJobRecord = await userAppliedJob.findOne({ userId: uid });
+  
+      if (!appliedJobRecord) {
+        // If no record exists for this user, create a new one
+        appliedJobRecord = new userAppliedJob({
+          userId: uid,
+          appliedJobs: [{ jobId, appliedDate: new Date(), appliedStatus: 'pending' }],
+        });
+      } else {
+        // If record exists, push the new applied job
+        appliedJobRecord.appliedJobs.push({ jobId, appliedDate: new Date(), appliedStatus: 'pending' });
+      }
+  
+      await appliedJobRecord.save();
+      
+      return res.status(200).json({ message: "Job application successful." });
+    } catch (error) {
+      console.error("Error applying for job:", error);
+      return res.status(500).json({ message: "Server error, please try again later." });
+    }
+  };
   
 
-export { getAllJobs,getJobs,SaveDraft,handleCompanyRegistration, handleLoginToCompany,getCompanyData,HandleJobPost,closePosition };
+export { getAllJobs,getJobs,SaveDraft,handleCompanyRegistration, handleLoginToCompany,getCompanyData,HandleJobPost,closePosition,handleApplyJobs };

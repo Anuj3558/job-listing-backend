@@ -75,14 +75,14 @@ const handleBlogs = async (req, res) => {
 };
 const handleSingleBlog = async (req, res) => {
   const { id } = req.params;
-  console.log(id);
+ 
   try {
     const blog = await Blog.findById(id)  ;
     const userId = blog.userId;
     
-    console.log(userId);
+  
     const user = await UserProfile.findOne({ uid :userId});
-    console.log(user);
+    
     if(!user){
       return res.status(404).json({ error: "User not found" });
     }

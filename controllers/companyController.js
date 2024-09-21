@@ -2,6 +2,8 @@ import cloudinary from "../config/cloudinaryConfig.js";
 import userAppliedJob from "../model/appliedJobs.js";
 import Company from "../model/CompanyModel.js";
 import Job from "../model/JobModel.js";
+import JobApplication from "../model/JobsApplied.js";
+import AppliedJob from "../model/JobsApplied.js";
 import UserProfile from "../model/userModel.js";
 import bcrypt from 'bcrypt';
 
@@ -15,7 +17,7 @@ const handleLoginToCompany = async (req, res) => {
         if (user) {
           const userEmail = user.email;
   
-          console.log(companyCode1);
+          
           // Find the company by its code
           const company = await Company.findOne({ code: companyCode1 });
           if (company) {
@@ -29,18 +31,18 @@ const handleLoginToCompany = async (req, res) => {
                 { $set: { userType: "company" } }
               );
               
-              console.log(`Added ${userEmail} as an admin to company ${company.name}`);
+
               res.status(200).send({ message: "User added as admin", company });
             } else {
-              console.log(`${userEmail} is already an admin of the company ${company.name}`);
+             
               res.status(200).send({ message: "User is already an admin", company });
             }
           } else {
-            console.log("Company not found");
+
             res.status(404).send({ message: "Company not found" });
           }
         } else {
-          console.log("User not found");
+         
           res.status(404).send({ message: "User not found" });
         }
       } catch (error) {
@@ -87,8 +89,7 @@ const handleCompanyRegistration = async (req, res) => {
       { new: true } // Options: return the updated document
     );
 
-    console.log(user);
-    console.log('Company registered:', newCompany);
+ 
 
     res.status(201).json({ message: 'Company registered successfully', company: newCompany });
   } catch (error) {
@@ -102,7 +103,7 @@ const getAllJobs =async(req,res)=>{
 
     // Find jobs by company name
     const jobs = await Job.find();
-    console.log(jobs)
+   
 
     // Check if jobs were found
     if (jobs.length === 0) {
@@ -168,7 +169,7 @@ const getCompanyData = async (req, res) => {
         educationRequirements,
         jobType, // Company name
       } = req.body;
-       console.log(Companyname)
+
        const fetchedCompany=await Company.find({name:Companyname})
 
        const url = fetchedCompany[0].logoUrl;
@@ -184,7 +185,7 @@ const getCompanyData = async (req, res) => {
         // Save the updated job to the database
         await job.save();
   
-        console.log(job);
+     
   
         // Respond with the updated job and a success message
         res.status(201).json({
@@ -225,7 +226,8 @@ const getCompanyData = async (req, res) => {
 const getJobs =async (req, res) => {
     try {
       const { companyname } = req.query; // Get companyname from query parameters
-      console.log(companyname);
+      
+
       if (!companyname) {
         return res.status(200).json({
           message: "Company name is required",
@@ -234,7 +236,7 @@ const getJobs =async (req, res) => {
   
       // Find jobs by company name
       const jobs = await Job.find({ company: companyname });
-      console.log(jobs)
+
   
       // Check if jobs were found
       if (jobs.length === 0) {
@@ -271,18 +273,7 @@ const SaveDraft = async (req, res) => {
         jobType,
       } = req.body;
   
-      console.log(
-        title,
-        Companyname,
-        location,
-        salary,
-        description,
-        whoWeAreLookingFor,
-        experienceRequirements,
-        jobFeatures,
-        educationRequirements,
-        jobType
-      );
+      
   
       // Check if a job with the given title and company already exists
       let job = await Job.findOne({ title, Companyname });
@@ -290,7 +281,7 @@ const SaveDraft = async (req, res) => {
      
       const url = fetchedCompany[0].logoUrl;
       
-      console.log("jjjjjj"+job)
+     
       if (job) {
         // Update the existing job with new values
         job.location = location;
@@ -306,7 +297,7 @@ const SaveDraft = async (req, res) => {
         // Save the updated job to the database
         await job.save();
   
-        console.log(job);
+    
   
         // Respond with the updated job and a success message
         res.status(201).json({
@@ -333,7 +324,6 @@ const SaveDraft = async (req, res) => {
         // Save the job to the database
         await job.save();
   
-        console.log(job);
   
         // Respond with the saved job and a success message
         res.status(201).json({
@@ -352,10 +342,10 @@ const SaveDraft = async (req, res) => {
 
 
   const closePosition = async (req, res) => {
-    console.log("Request received at close-position route");
+  
   
     const { jobId } = req.body;
-    console.log("Job ID received:", jobId);
+   
   
     try {
       const updatedJob = await Job.findByIdAndUpdate(
@@ -381,39 +371,87 @@ const SaveDraft = async (req, res) => {
   };
  // Adjust path based on your project structure
 
-   const handleApplyJobs = async (req, res) => {
-    const { jobId, uid } = req.body;
-  
-    try {
-      // Check if the user has already applied for this job
-      const userApplied = await userAppliedJob.findOne({ userId: uid, 'appliedJobs.jobId': jobId });
-  
-      if (userApplied) {
-        return res.status(200).json({ message: "User has already applied for this job." });
-      }
-  
-      // If the user hasn't applied, create or update their applied jobs
-      let appliedJobRecord = await userAppliedJob.findOne({ userId: uid });
-  
-      if (!appliedJobRecord) {
-        // If no record exists for this user, create a new one
-        appliedJobRecord = new userAppliedJob({
-          userId: uid,
-          appliedJobs: [{ jobId, appliedDate: new Date(), appliedStatus: 'pending' }],
-        });
-      } else {
-        // If record exists, push the new applied job
-        appliedJobRecord.appliedJobs.push({ jobId, appliedDate: new Date(), appliedStatus: 'pending' });
-      }
-  
-      await appliedJobRecord.save();
-      
-      return res.status(200).json({ message: "Job application successful." });
-    } catch (error) {
-      console.error("Error applying for job:", error);
-      return res.status(500).json({ message: "Server error, please try again later." });
-    }
-  };
-  
+ // Updated model name
 
-export { getAllJobs,getJobs,SaveDraft,handleCompanyRegistration, handleLoginToCompany,getCompanyData,HandleJobPost,closePosition,handleApplyJobs };
+ const handleApplyJobs = async (req, res) => {
+   const { jobId, uid } = req.body;
+ 
+   try {
+     // Check if the user has already applied for this job in userAppliedJob
+     const userApplied = await userAppliedJob.findOne({ userId: uid, 'appliedJobs.jobId': jobId });
+ 
+     if (userApplied) {
+       return res.status(200).json({ message: "User has already applied for this job." });
+     }
+ 
+     // If the user hasn't applied, create or update their applied jobs in userAppliedJob
+     let appliedJobRecord = await userAppliedJob.findOne({ userId: uid });
+ 
+     if (!appliedJobRecord) {
+       appliedJobRecord = new userAppliedJob({
+         userId: uid,
+         appliedJobs: [{ jobId, appliedDate: new Date(), appliedStatus: 'pending' }],
+       });
+     } else {
+       appliedJobRecord.appliedJobs.push({ jobId, appliedDate: new Date(), appliedStatus: 'pending' });
+     }
+ 
+     await appliedJobRecord.save();
+ 
+     // Save the job application in JobApplication schema
+     let jobApplicationRecord = await JobApplication.findOne({ jobId });
+ 
+     if (!jobApplicationRecord) {
+       jobApplicationRecord = new JobApplication({
+         jobId,
+         appliedCandidates: [uid], // Add the first candidate
+       });
+     } else {
+       jobApplicationRecord.appliedCandidates.push(uid);
+     }
+ 
+     await jobApplicationRecord.save();
+ 
+     return res.status(200).json({ message: "Job application successful." });
+   } catch (error) {
+     console.error("Error applying for job:", error);
+     return res.status(500).json({ message: "Server error, please try again later." });
+   }
+ };
+ 
+ const UserJobAnalytics = async (req, res) => {
+  const { uid } = req.body; // Assuming user ID is passed in the request body
+
+try {
+  // Find the user's applied jobs
+  const appliedJobsData = await userAppliedJob.findOne({ userId: uid });
+
+  if (!appliedJobsData || !appliedJobsData.appliedJobs.length) {
+    return res.status(404).json({ message: "No applied jobs found for this user." });
+  }
+
+  // Map through the applied jobs and fetch job details
+  const appliedJobDetails = await Promise.all(
+    appliedJobsData.appliedJobs.map(async (job) => {
+      const jobDetails = await Job.findById(job.jobId);
+      return {
+        title: jobDetails.title,
+        company: jobDetails.company,
+        location: jobDetails.location,
+        appliedDate: job.appliedDate,
+        appliedStatus: job.appliedStatus,
+      };
+    })
+  );
+  console.log(appliedJobDetails)
+  // Return the applied jobs in the response
+  return res.status(200).json({
+    totalAppliedJobs: appliedJobDetails.length,
+    appliedJobs: appliedJobDetails,
+  });
+} catch (error) {
+  console.error(error);
+  return res.status(500).json({ message: "Server error. Please try again later." });
+}
+ }
+export { UserJobAnalytics,getAllJobs,getJobs,SaveDraft,handleCompanyRegistration, handleLoginToCompany,getCompanyData,HandleJobPost,closePosition,handleApplyJobs };

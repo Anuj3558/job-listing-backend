@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCompanyData, handleCompanyRegistration,handleLoginToCompany,HandleJobPost, SaveDraft, getJobs, getAllJobs,closePosition } from "../controllers/companyController.js";
+import { UserJobAnalytics,getCompanyData, handleCompanyRegistration,handleLoginToCompany,HandleJobPost, SaveDraft, getJobs, getAllJobs,closePosition } from "../controllers/companyController.js";
 import upload from "../middleware/multer.js";
 
 const companyRouter = Router();
@@ -14,5 +14,6 @@ companyRouter.route("/save-draft").post(SaveDraft);
 companyRouter.route("/get-jobs/?").get(getJobs);
 companyRouter.route("/get-all-jobs").get(getAllJobs);
 companyRouter.route("/close-position").post(closePosition);
+companyRouter.route("/user-job-analytics").put(UserJobAnalytics);
 
 export default companyRouter;

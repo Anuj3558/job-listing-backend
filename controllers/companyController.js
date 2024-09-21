@@ -14,7 +14,7 @@ const handleLoginToCompany = async (req, res) => {
         if (user) {
           const userEmail = user.email;
   
-          console.log(companyCode1);
+          // console.log(companyCode1);
           // Find the company by its code
           const company = await Company.findOne({ code: companyCode1 });
           if (company) {
@@ -86,7 +86,7 @@ const handleCompanyRegistration = async (req, res) => {
       { new: true } // Options: return the updated document
     );
 
-    console.log(user);
+    // console.log(user);
     console.log('Company registered:', newCompany);
 
     res.status(201).json({ message: 'Company registered successfully', company: newCompany });
@@ -101,7 +101,7 @@ const getAllJobs =async(req,res)=>{
 
     // Find jobs by company name
     const jobs = await Job.find();
-    console.log(jobs)
+    // console.log(jobs)
 
     // Check if jobs were found
     if (jobs.length === 0) {
@@ -167,7 +167,7 @@ const getCompanyData = async (req, res) => {
         educationRequirements,
         jobType, // Company name
       } = req.body;
-       console.log(Companyname)
+      //  console.log(Companyname)
        const fetchedCompany=await Company.find({name:Companyname})
 
        const url = fetchedCompany[0].logoUrl;
@@ -183,7 +183,7 @@ const getCompanyData = async (req, res) => {
         // Save the updated job to the database
         await job.save();
   
-        console.log(job);
+        // console.log(job);
   
         // Respond with the updated job and a success message
         res.status(201).json({
@@ -224,7 +224,7 @@ const getCompanyData = async (req, res) => {
 const getJobs =async (req, res) => {
     try {
       const { companyname } = req.query; // Get companyname from query parameters
-      console.log(companyname);
+      // console.log(companyname);
       if (!companyname) {
         return res.status(200).json({
           message: "Company name is required",

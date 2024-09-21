@@ -3,7 +3,6 @@ import UserProfile from "../model/userModel.js";
 // Handle registration with Google
 const HandleRegisterWithGoogle = async (req, res) => {
   const { email, uid, name, profile } = req.body;
-  // console.log(profile);
   try {
     // Check if the user already exists by UID
     const existingUser = await UserProfile.findOne({ uid });
@@ -64,7 +63,7 @@ const HandleRegisterWithEmailAndPassword = async (req, res) => {
 const handleSaveChanges = async (req, res) => {
   try {
     const data = req.body; // Extract the data from the request body
-    // console.log(data);
+ 
 
     // Update the user profile in the database
     const updatedUser = await UserProfile.findOneAndUpdate(

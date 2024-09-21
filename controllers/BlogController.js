@@ -75,7 +75,6 @@ const handleBlogs = async (req, res) => {
 };
 const handleSingleBlog = async (req, res) => {
   const { id } = req.params;
-
   try {
     const blog = await Blog.findById(id);
     const userId = blog.userId;
@@ -197,8 +196,6 @@ const handleLike = async (req, res) => {
     res.status(500).json({ message: "Error handling like/unlike", error });
   }
 };
-
-
 
 export {
   handleBlogs,
